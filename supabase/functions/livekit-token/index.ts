@@ -148,7 +148,17 @@ export default {
 
     // The identity comes from the verified JWT, never from the body. If a client could
     // name itself, every active-speaker label on every device would be worth nothing.
-    const identity = ctx.userClaims?.sub
+    //
+    // Two sources, in order, because `ctx.userClaims` is not populated by every
+    // @supabase/server 1.x build — and when it is absent this function used to reject a
+    // perfectly valid signed-in caller with "Not signed in.", which is a confusing thing
+    // to debug from a phone. `auth.getUser()` reads the same Authorization header the
+    // platform already verified, so the fallback is no weaker than the primary: both
+    // derive the id from the JWT, neither trusts the request body.
+    const identity: string | undefined =
+      ctx.userClaims?.sub ??
+      (await ctx.supabase.auth.getUser()).data?.user?.id
+
     if (!identity) return bad('Not signed in.', 401)
 
     // The display name is what other volunteers see when this person keys the mic, so it

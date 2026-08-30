@@ -15,6 +15,8 @@ import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.functions.functions
 import io.ktor.client.call.body
 import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import com.twilio.audioswitch.AudioDevice
 import io.livekit.android.AudioOptions
 import io.livekit.android.AudioType
@@ -581,6 +583,7 @@ class LiveKitWalkieController @Inject constructor(
     private suspend fun fetchToken(channelId: String): String =
         withContext(dispatchers.io) {
             val response = supabase.functions.invoke("livekit-token") {
+                contentType(ContentType.Application.Json)
                 setBody(TokenRequest(room = channelId))
             }
 

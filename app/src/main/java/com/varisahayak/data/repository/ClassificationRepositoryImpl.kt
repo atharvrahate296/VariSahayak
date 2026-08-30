@@ -11,6 +11,8 @@ import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.functions.functions
 import io.ktor.client.call.body
 import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
@@ -55,6 +57,7 @@ class ClassificationRepositoryImpl @Inject constructor(
 
         try {
             val response = supabase.functions.invoke("classify-incident") {
+                contentType(ContentType.Application.Json)
                 setBody(
                     ClassifyRequest(
                         description = description.trim(),

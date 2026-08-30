@@ -40,6 +40,8 @@ import io.github.jan.supabase.functions.functions
 import io.github.jan.supabase.postgrest.from
 import io.ktor.client.call.body
 import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -275,6 +277,7 @@ class LostFoundRepositoryImpl @Inject constructor(
             val encoded = Base64.encodeToString(bytes, Base64.NO_WRAP)
 
             val response = supabase.functions.invoke("process-face") {
+                contentType(ContentType.Application.Json)
                 setBody(
                     FaceProcessingRequest(report_client_id = clientId, image = encoded),
                 )
